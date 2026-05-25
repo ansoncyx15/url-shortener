@@ -1,0 +1,29 @@
+# Development image for the Rails API (hot-reload via bind mount).
+FROM ruby:3.3-slim
+
+ENV BUNDLE_PATH=/usr/local/bundle \
+    BUNDLE_JOBS=4 \
+    LANG=C.UTF-8
+
+# build-essential: native gem compilation (puma, bcrypt). libyaml-dev + pkg-config:
+# psych's C extension needs the libyaml headers. curl: healthchecks.
+RUN apt-get update -qq && apt-get install -y --no-install-recommends \
+      build-essential \
+      libyaml-dev \
+      pkg-config \
+      git \
+      curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Install gems into the image. Gems live in BUNDLE_PATH (outside /app), so the
+# source bind mount in compose doesn't clobber them. Adding a gem = rebuild.
+COPY Gemfile ./
+RUN bundle install
+
+COPY . .
+
+EXPOSE 3001
+
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
