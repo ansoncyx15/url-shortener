@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+:root {
+  --background: var(--color-white);
+  --foreground: var(--color-black);
+  --muted: var(--color-gray-100);
+  --muted-foreground: var(--color-gray-500);
+
+  --primary: var(--color-blue-600);
+  --primary-foreground: var(--color-white);
+  --primary-border: oklch(0.4868 0.1459 257.66); /* rgb(33, 93, 176); */
+  --primary-hover: var(--color-blue-700);
+  --primary-active: var(--color-blue-800);
+
+  --success: var(--color-green-500);
+  --success-foreground: var(--color-white);
+  --success-border: var(--color-green-600);
+  --success-hover: var(--color-green-700);
+  --success-active: var(--color-green-800);
+
+  --ghost-hover: --alpha(var(--color-gray-300) / 80%);
+  --ghost-active: var(--color-gray-300);
+
+  --button-shadow-color: rgba(17, 20, 24, 0.2);
+
+  --border: rgb(230, 226, 212);
+
+  --input: var(--color-gray-400);
+  --input-ring: oklch(0.6058 0.1674 252.7);
+  --input-error: var(--color-red-500);
+  --input-error-ring: var(--color-red-500);
+
+  --input-shadow: 0 0 0 1px var(--input);
+  --input-focus-shadow: inset 0 0 0 1px var(--primary), 0 0 0 1px var(--primary);
+  --input-invalid-shadow: inset 0 0 0 1px var(--color-red-500), 0 0 0 1px var(--color-red-500);
+  --input-invalid-text: #b91c1c;
+
+  /*--link: oklch(0.4868 0.1459 257.66);*/
+  --link: var(--color-blue-800);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-active: var(--primary-active);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-hover: var(--success-hover);
+  --color-success-active: var(--success-active);
+
+  --color-ghost-hover: var(--ghost-hover);
+  --color-ghost-active: var(--ghost-active);
+
+  --color-muted: var(--muted);
+  --color-muted-background: var(--muted-background);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-border: var(--border);
+  --color-link: var(--link);
+
+  --shadow-button: 0 1px 2px 0 var(--button-shadow-color);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  --color-input: var(--input);
+  --color-input-ring: var(--input-ring);
+  --color-input-error: var(--input-error);
+  --color-input-error-ring: var(--input-error-ring);
+
+  --color-input-shadow: var(--input-shadow);
+  --color-input-focus-shadow: var(--input-focus-shadow);
+  --color-input-invalid-shadow: var(--input-invalid-shadow);
+  --color-input-invalid-text: var(--input-invalid-text);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.form-row {
+  @apply data-[cols='1']:sm:grid-cols-1;
+  @apply data-[cols='2']:sm:grid-cols-2;
+  @apply data-[cols='3']:sm:grid-cols-3;
+  @apply data-[cols='4']:sm:grid-cols-4;
+  @apply data-[cols='5']:sm:grid-cols-5;
+  @apply data-[cols='6']:sm:grid-cols-6;
+  @apply data-[cols='7']:sm:grid-cols-7;
+  @apply data-[cols='8']:sm:grid-cols-8;
+  @apply data-[cols='9']:sm:grid-cols-9;
+  @apply data-[cols='10']:sm:grid-cols-10;
+}
