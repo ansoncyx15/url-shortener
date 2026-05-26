@@ -18,6 +18,7 @@ class Url
   index({ expires_at: 1 }, { expire_after_seconds: 1.day.to_i })
 
   validates :long_url,   presence: true
+  validate  :long_url_is_http
   validates :short_code, presence: true, uniqueness: true
 
   def expired?
@@ -30,5 +31,20 @@ class Url
     return default if expires_at.blank?
 
     [(expires_at - Time.now).to_i, 1].max
+  end
+
+  private
+
+  # Only accept well-formed http(s) URLs — rejects other schemes (javascript:,
+  # ftp:, data:, …) so a short link can't be turned into an open redirect.
+  def long_url_is_http
+    return if long_url.blank? # presence validation handles the blank case
+
+    uri = URI.parse(long_url)
+    unless uri.is_a?(URI::HTTP) && uri.host.present?
+      errors.add(:long_url, "must be a valid http or https URL")
+    end
+  rescue URI::InvalidURIError
+    errors.add(:long_url, "is not a valid URL")
   end
 end
