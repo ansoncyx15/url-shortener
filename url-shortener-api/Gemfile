@@ -10,3 +10,7 @@ gem "bcrypt", "~> 3.1"
 group :development do
   gem "listen"
 end
+
+group :development, :test do
+  gem "rspec-rails", "~> 6.1"
+end

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Run the test suite against isolated test databases (a separate Mongo DB and a
+# separate Redis DB) so it never touches development data.
+#
+# Run inside the backend container:
+#   docker compose exec backend bin/test
+#   docker compose exec backend bin/test spec/requests/token_expiry_spec.rb
+set -e
+
+export RAILS_ENV=test
+export MONGODB_URI=mongodb://mongo:27017/url_shortener_test
+export REDIS_URL=redis://redis:6379/1
+
+exec bundle exec rspec "$@"
