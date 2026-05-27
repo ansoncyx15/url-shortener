@@ -59,6 +59,23 @@ Source directories are bind-mounted, so editing `url-shortener-client/` or
 code changes. You only need `--build` again when you add a dependency (an npm
 package or a gem).
 
+## Running the tests
+
+With the stack running (`docker compose up`), exec into the backend container and run the test suite against isolated test databases:
+
+```bash
+docker compose exec backend bash bin/test
+```
+
+To run a single spec file:
+
+```bash
+docker compose exec backend bash bin/test spec/request/token_expiry_spec.rb
+```
+
+> If you see `permission denied`, fix it once with:
+> `docker compose exec backend chmod +x bin/test`
+
 ## API surface
 
 | Method | Path | Auth | Description |
