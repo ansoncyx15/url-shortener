@@ -20,10 +20,4 @@ class ApplicationController < ActionController::API
 
     @current_guest_token = bearer_token.present? && REDIS.exists?("guest:#{bearer_token}") ? bearer_token : nil
   end
-
-  def require_user!
-    return if current_user
-
-    render json: { error: "unauthorized" }, status: :unauthorized
-  end
 end
