@@ -6,10 +6,10 @@ import Card from "@/src/components/Card";
 import HelpText from "@/src/components/HelpText";
 
 export default function ShortenUrlCreatedView({ url, setCreatedUrl = () => {} }) {
+  if (isEmpty(url)) return null;
+
   const { shortUrl, longUrl, expiresAt } = url;
   const expiredLabel = expiresAt ? new Date(expiresAt).toLocaleDateString() : "";
-
-  if (isEmpty(url)) return null;
 
   return (
     <Card className="space-y-4">
