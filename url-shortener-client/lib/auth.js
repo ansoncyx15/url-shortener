@@ -8,31 +8,31 @@ const GUEST_TOKEN_KEY = "guest_token";
 // layout (e.g. the header) can react without remounting.
 export const SESSION_EVENT = "session-change";
 
-function checkWindow() {
-  if (typeof window === "undefined") return;
+function isBrowser() {
+  return typeof window !== "undefined";
 }
 
 function notifySessionChange() {
-  checkWindow();
+  if (!isBrowser()) return;
   window.dispatchEvent(new Event(SESSION_EVENT));
 }
 
 function post(url, { email, password }) {
-  apiFetch(url, { method: "POST", body: { email, password } });
+  return apiFetch(url, { method: "POST", body: { email, password } });
 }
 
 function localStorageGetter(key) {
-  checkWindow();
+  if (!isBrowser()) return null;
   return localStorage.getItem(key);
 }
 
 function localStorageSetter(key, value) {
-  checkWindow();
+  if (!isBrowser() || !value) return;
   localStorage.setItem(key, value);
 }
 
 function localStorageRemover(key) {
-  checkWindow();
+  if (!isBrowser()) return;
   localStorage.removeItem(key);
 }
 
@@ -49,17 +49,15 @@ export function login({ email, password }) {
 // Client-side session
 export function saveSession({ token, email }) {
   localStorageSetter(TOKEN_KEY, token);
-  if (email) localStorageSetter(EMAIL_KEY, email);
+  localStorageSetter(EMAIL_KEY, email);
   notifySessionChange();
 }
 
 export function getToken() {
-  if (typeof window === "undefined") return null;
   return localStorageGetter(TOKEN_KEY);
 }
 
 export function getEmail() {
-  if (typeof window === "undefined") return null;
   return localStorageGetter(EMAIL_KEY);
 }
 
@@ -73,7 +71,6 @@ export function clearSession() {
 // A guest token lets a non-signed-in visitor own the links they create. It is kept
 // separate from the user token so the app still treats guests as "not logged in".
 function getGuestToken() {
-  if (typeof window === "undefined") return null;
   return localStorageGetter(GUEST_TOKEN_KEY);
 }
 
