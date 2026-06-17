@@ -6,8 +6,11 @@ class RedirectsController < ApplicationController
     long_url = REDIS.get("url:#{code}")
 
     if long_url.nil?
-      url = Url.find_by(short_code: code)
-      return render json: { error: "Link not found!" }, status: :not_found if url.blank?
+      begin
+        url = Url.find_by(short_code: code)
+      rescue Mongoid::Errors::DocumentNotFound
+        return render json: { error: "Link not found!" }, status: :not_found
+      end
       return render json: { error: "Link expired!" }, status: :gone if url.expired?
 
       long_url = url.long_url
