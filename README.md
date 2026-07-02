@@ -11,7 +11,7 @@ URL shortener: turn long URLs into short, shareable links and get redirects back
 **Back-end**
 - Ruby on Rails
 - MongoDB
-- Redis
+- Redis (one primary + a read replica)
 
 **Tooling**
 - Docker Compose for local development
@@ -20,7 +20,8 @@ URL shortener: turn long URLs into short, shareable links and get redirects back
 
 - **Shorten** (`POST /api/urls`): the URL is saved to MongoDB and the
   `short_code → long_url` mapping is cached into Redis.
-- **Redirect** (`GET /:short_code`): for low latency, redis will be checked first;
+- **Redirect** (`GET /:short_code`): for low latency, redis is checked first.
+  Reads go to the replica, and if it's down they fall back to the primary.
   MongoDB is only hit on a cache miss, then the result is cached. The redirect
   is a 302 so visit counting and expiry stay enforceable.
 - **Auth**: login/signup and guest both return a token and stored in
