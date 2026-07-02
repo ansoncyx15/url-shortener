@@ -3,7 +3,7 @@ class RedirectsController < ApplicationController
   # is only hit on a cache miss (then the result is cached for next time).
   def show
     code = params[:short_code]
-    long_url = REDIS.get("url:#{code}")
+    long_url = RedisCache.read("url:#{code}")
 
     if long_url.nil?
       begin

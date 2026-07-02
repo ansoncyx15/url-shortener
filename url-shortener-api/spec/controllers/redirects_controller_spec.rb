@@ -18,7 +18,17 @@ RSpec.describe RedirectsController, type: :controller do
 
   describe "GET #show" do
     it "redirects using cached redis value" do
-      allow(REDIS).to receive(:get).with("url:abc123").and_return("https://google.com")
+      allow(REDIS_READ).to receive(:get).with("url:abc123").and_return("https://google.com")
+      allow(Url).to receive_message_chain(:where, :inc)
+
+      get :show, params: { short_code: "abc123" }
+
+      expect(response).to redirect_to("https://google.com")
+    end
+
+    it "falls back to the primary when the replica read fails" do
+      allow(REDIS_READ).to receive(:get).and_raise(Redis::BaseConnectionError)
+      allow(REDIS_PRIMARY).to receive(:get).with("url:abc123").and_return("https://google.com")
       allow(Url).to receive_message_chain(:where, :inc)
 
       get :show, params: { short_code: "abc123" }
@@ -27,7 +37,7 @@ RSpec.describe RedirectsController, type: :controller do
     end
 
     it "loads from database when cache misses" do
-      allow(REDIS).to receive(:get).and_return(nil)
+      allow(REDIS_READ).to receive(:get).and_return(nil)
       allow(REDIS).to receive(:setex)
 
       allow(Url).to receive(:find_by).with(short_code: "abc123").and_return(url)
@@ -40,8 +50,8 @@ RSpec.describe RedirectsController, type: :controller do
     end
 
     it "returns not found when url does not exist" do
-      allow(REDIS).to receive(:get).and_return(nil)
-      allow(Url).to receive(:find_by).and_return(nil)
+      allow(REDIS_READ).to receive(:get).and_return(nil)
+      allow(Url).to receive(:find_by).and_raise(Mongoid::Errors::DocumentNotFound.new(Url, short_code: "missing"))
 
       get :show, params: { short_code: "missing" }
 
@@ -54,7 +64,7 @@ RSpec.describe RedirectsController, type: :controller do
         expired?: true,
       )
 
-      allow(REDIS).to receive(:get).and_return(nil)
+      allow(REDIS_READ).to receive(:get).and_return(nil)
       allow(Url).to receive(:find_by).and_return(expired_url)
 
       get :show, params: { short_code: "expired" }
