@@ -6,6 +6,7 @@ gem "puma", "~> 6.4"
 gem "redis", "~> 5.0"
 gem "rack-cors"
 gem "bcrypt", "~> 3.1"
+gem "connection_pool"
 
 group :development do
   gem "listen"
